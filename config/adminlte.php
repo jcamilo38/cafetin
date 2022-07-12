@@ -229,8 +229,9 @@ return [
         ['header' => 'ADMINISTRACIÓN'],
         [
             'text' => 'Usuarios',
-            'url'  => 'admin/settings',
+            'route'  => 'administrador.users.index',
             'icon' => 'fas fa-fw fa-user',
+            'active'=> ['administrador/users*']
         ],
         [
             'text' => 'Productos',
