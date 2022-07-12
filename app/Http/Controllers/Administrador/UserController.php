@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Administrador;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
-
+use  Exception;
+use RealRashid\SweetAlert\Facades\Alert;
 class UserController extends Controller
+
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +17,9 @@ class UserController extends Controller
      */
     public function index()
     {
-       return view('administrador.users.index');
+        $users = User::all();
+
+       return view('administrador.users.index', compact('users')); //Metodo compact envia variable a la vista
     }
 
     /**
@@ -35,8 +40,20 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+                User::create($request->all());
+                Alert::success('Success Title', 'Success Message');
+                return redirect()->route('administrador.users.index');
+            }
+
+               catch (Exception $e)
+                {
+                    return  "Ha ocurrido un error";
+                 }
+
     }
+
+
 
     /**
      * Display the specified resource.
@@ -78,8 +95,8 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+
     }
 }

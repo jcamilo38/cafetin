@@ -8,7 +8,15 @@
 @stop
 
 @section('content')
-    <p></p>
+    <div class="card">
+        <div class="card-body">
+            {!! Form::open(['route' => 'administrador.users.store']) !!}
+                @include('administrador.users.partials.form')
+
+                {!! Form::submit('Crear usuario',['class' =>'btn btn-primary btn-md']) !!}
+                {!! Form::close() !!}
+        </div>
+    </div>
 @stop
 
 @section('css')
