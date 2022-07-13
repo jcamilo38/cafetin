@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administrador;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserStoreRequest;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -11,39 +12,31 @@ use RealRashid\SweetAlert\Facades\Alert;
 class UserController extends Controller
 
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        $users = User::all();
+        $users = User::where('status','1')->get();
 
        return view('administrador.users.index', compact('users')); //Metodo compact envia variable a la vista
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         return view('administrador.users.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+
+    public function store(UserStoreRequest $request)
     {
         try {
-                User::create($request->all());
-                toast('Registro guardado con exito!','success');
+                User::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'status' => '1',
+                    'password' => bcrypt($request->password),
+                ]);
+                Alert::toast('Registro guardado con exito!','success');
                 return redirect()->route('administrador.users.index');
             }
 
@@ -56,23 +49,12 @@ class UserController extends Controller
 
 
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit(User $user)
     {
         return view('administrador.users.edit', compact('user'));
@@ -83,20 +65,49 @@ class UserController extends Controller
     {
         try
         {
-            $user->update($request->all());
+            if($request->password == null)
+            {
+                $password = $user->password;
+            }
+            else
+            {
+                $password = bcrypt($request->password);
+            }
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'status' => $user->status,
+                'password' => $password
+            ]);
             Alert::toast('Usuario editado con exito','success');
             return redirect()->route('administrador.users.index');
         }
 
         catch (\Exception $e)
         {
-
+            Alert::toast('Ocurrio un error al actualizar','error');
+            return redirect()->route('administrador.users.index');
         }
 
     }
 
     public function destroy(User $user)
     {
+        try{
+            $user->update([
+
+                'status' => '0'
+
+            ]);
+            Alert::toast('Usuario eliminado correctamente','success');
+            return redirect()->route('administrador.users.index');
+
+        }
+
+        catch(Exception $e) {
+            Alert::toast('Error al eliminar','success');
+            return redirect()->route('administrador.users.index');
+              }
 
     }
 }
