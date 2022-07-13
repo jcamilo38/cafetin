@@ -1,22 +1,22 @@
 @extends('adminlte::page')
 
 @section('title', 'Usuarios')
-@include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
-@include('sweetalert::alert')
 @section('content_header')
 <h3>Gestión de usuarios</h3>
 <a href="{{route('administrador.users.create')}}" class="btn btn-primary">Crear usuario</a>
 @stop
 
 @section('content')
+@include('sweetalert::alert')
     <div class="card">
         <div class="card-body">
-           <table class="table table-stripe">
+           <table class="table table-striped" id="users">
             <thead>
                 <tr>
                     <th>Nombre</th>
                     <th>Correo</th>
-                    <th colspan="2"></th>
+                    <th> </th>
+                    <th> </th>
 
                 </tr>
 
@@ -55,3 +55,32 @@
 @section('js')
     <script> console.log('Hi!'); </script>
 @stop
+
+@push('js')
+<script>
+    $(document).ready(function () {
+        $('#users').DataTable({
+            responsive:true,
+            autoWidth:false,
+            "language":{
+                "lengthMenu":"Mostrar "+
+            `<select class="custom-select custom-select-sm form-control form-control-sm">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="-1">Todos</option>
+                </select>`
+                +" registros por página",
+                "zeroRecords":"Nada encontrado",
+                "info":"Mostrando la página _PAGE_ de _PAGES_",
+                "search":"Buscar:",
+                "paginate":{
+                    'next':'Siguiente',
+                    'previous':'Anterior'
+                }
+            }
+        });
+    });
+</script>
+@endpush

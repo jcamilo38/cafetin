@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administrador;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use  Exception;
@@ -42,7 +43,7 @@ class UserController extends Controller
     {
         try {
                 User::create($request->all());
-                Alert::success('Success Title', 'Success Message');
+                toast('Registro guardado con exito!','success');
                 return redirect()->route('administrador.users.index');
             }
 
@@ -72,29 +73,28 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
+        return view('administrador.users.edit', compact('user'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+
+    public function update(Request $request, User $user)
     {
-        //
+        try
+        {
+            $user->update($request->all());
+            Alert::toast('Usuario editado con exito','success');
+            return redirect()->route('administrador.users.index');
+        }
+
+        catch (\Exception $e)
+        {
+
+        }
+
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(User $user)
     {
 

@@ -7,7 +7,7 @@
 @stop
 
 @section('content')
-    <p></p>
+
 @stop
 
 @section('css')
